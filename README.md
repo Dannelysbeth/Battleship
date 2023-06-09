@@ -1,2 +1,4 @@
 # Battleship
-Repository for Hiperskill project
+Repository for Hiperskill project 
+// TODO
+Start
