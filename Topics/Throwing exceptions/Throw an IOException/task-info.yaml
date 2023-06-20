@@ -1,0 +1,32 @@
+type: code
+files:
+- name: src/Main.java
+  visible: true
+  text: |-
+    import java.io.IOException;
+
+    public class Main {
+
+        // change this method
+        public static void method() {
+
+        }
+
+        /* Do not change code below */
+        public static void main(String[] args) {
+            try {
+                method();
+            } catch (Exception e) {
+                System.out.println(e.getClass());
+            }
+        }
+    }
+  learner_created: false
+feedback_link: https://hyperskill.org/learn/step/2835#comment
+status: Failed
+feedback:
+  message: |
+    Failed. Wrong answer
+  time: "Tue, 06 Jun 2023 23:15:28 UTC"
+record: -1
+submission_language: java17
