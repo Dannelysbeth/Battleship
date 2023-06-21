@@ -7,11 +7,6 @@ public class Main {
     // change this method
     public static void method() {
         char[][] board = new char[BOARD_SIZE ][BOARD_SIZE];
-//        board[0][0] = ' ';
-////        for (int i = 1; i <= BOARD_SIZE; i++) {
-////            i > 9 ? board[0][i] = (char) ('0' + i) : board[0][i] = ;
-////            board[i][0] = (char) ('A' + i - 1);
-////        }
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j < BOARD_SIZE; j++) {
                 board[i][j] = '~';
@@ -33,6 +28,28 @@ public class Main {
         }
     }
 
+    public char [] updateBoard(String firstCoordinate, int range, boolean horizontal) {
+        if (coordinateNear >)
+    }
+
+    boolean checkIfCorrectPoints(String firstCoordinate, String secondCoordinate, int range, boolean horizontal) throws IOException {
+
+       if (firstCoordinate.compareTo(secondCoordinate) > 0)  {
+           String temp = firstCoordinate;
+           firstCoordinate = secondCoordinate;
+           secondCoordinate = temp;
+       }
+        if (firstCoordinate.charAt(0) == secondCoordinate.charAt(0)) {
+            try {
+                int firstNumber = ((int) firstCoordinate.charAt(1));
+                int secondNumber = ((int) secondCoordinate.charAt(1));
+            }
+            if (firstCoordinate.charAt(1) - secondCoordinate.charAt(1) != range) {
+                throw new IOException();
+            }
+        }
+    }
+
     /* Do not change code below */
     public static void main(String[] args) throws IOException {
 
@@ -46,4 +63,6 @@ public class Main {
     public void setBoardGame() {
 
     }
+
+    private static int transformLettersToNumbers(char letterCoordinate)
 }
