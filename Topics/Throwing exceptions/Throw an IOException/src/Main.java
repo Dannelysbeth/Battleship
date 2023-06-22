@@ -1,12 +1,15 @@
 import java.io.IOException;
+import java.util.Scanner;
 
 public class Main {
 
     static final int BOARD_SIZE = 10;
 
     // change this method
-    public static void method() {
-        char[][] board = new char[BOARD_SIZE ][BOARD_SIZE];
+    public static void method() throws IOException {
+        Scanner scanner = new Scanner(System.in);
+        String startPoint = null, endPoint = null;
+        char[][] board = new char[BOARD_SIZE][BOARD_SIZE];
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j < BOARD_SIZE; j++) {
                 board[i][j] = '~';
@@ -26,29 +29,66 @@ public class Main {
             }
             System.out.println();
         }
+        System.out.println("Enter the coordinates of the Aircraft Carrier (5 cells):");
+        startPoint = scanner.next();
+        endPoint = scanner.next();
+        int[][] pointsCoordinates = new int[2][2];
+        pointsCoordinates = transformPoint(startPoint, endPoint);
+        board = updateBoard(board, pointsCoordinates, 5);
+        printBoard(board);
+
     }
 
-    public char [] updateBoard(String firstCoordinate, int range, boolean horizontal) {
-        if (coordinateNear >)
+    public static int[][] transformPoint(String firstCoordinate, String secondCoordinate) throws IOException {
+        int[][] coordinatesTable = new int[2][2];
+        coordinatesTable[0][0] = transformLettersToNumbers(firstCoordinate.charAt(0));
+        coordinatesTable[0][1] = Character.valueOf(firstCoordinate.charAt(1));
+        coordinatesTable[1][0] = transformLettersToNumbers(secondCoordinate.charAt(0));
+        coordinatesTable[1][1] = Character.valueOf(secondCoordinate.charAt(1));
+        return coordinatesTable;
     }
 
-    boolean checkIfCorrectPoints(String firstCoordinate, String secondCoordinate, int range, boolean horizontal) throws IOException {
+    public static char[][] updateBoard(char[][] board, int[][] intTable, int range) throws IOException {
+        if (intTable[0][0] == intTable[1][0]) {
+            for (int i = intTable[0][1]; i < intTable[1][1]; i++) {
+                board[intTable[0][0] - 1][i - 1] = 'O';
+            }
+        } else if (intTable[0][1] == intTable[1][1]) {
+            for (int i = intTable[0][0]; i < intTable[1][0]; i++) {
+                board[i - 1][intTable[0][1] - 1] = 'O';
+            }
+        } else {
+            throw new IOException("Smth wrong");
+        }
+        return board;
+    }
 
-       if (firstCoordinate.compareTo(secondCoordinate) > 0)  {
-           String temp = firstCoordinate;
-           firstCoordinate = secondCoordinate;
-           secondCoordinate = temp;
-       }
-        if (firstCoordinate.charAt(0) == secondCoordinate.charAt(0)) {
-            try {
-                int firstNumber = ((int) firstCoordinate.charAt(1));
-                int secondNumber = ((int) secondCoordinate.charAt(1));
+    public static void printBoard(char[][] board) {
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            char character = (char) ('A' + i);
+            System.out.print(character + " ");
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                System.out.print(board[i][j] + " ");
             }
-            if (firstCoordinate.charAt(1) - secondCoordinate.charAt(1) != range) {
-                throw new IOException();
-            }
+            System.out.println();
         }
     }
+
+//    boolean checkIfCorrectPoints(String firstCoordinate, String secondCoordinate, int range, boolean horizontal) throws IOException {
+//
+//        int firstNumber = Character.getNumericValue(firstCoordinate.charAt(0));
+//        int secondNumber = Character.getNumericValue(secondCoordinate.charAt(0));
+//        if (firstCoordinate.compareTo(secondCoordinate) > 0) {
+//            String temp = firstCoordinate;
+//            firstCoordinate = secondCoordinate;
+//            secondCoordinate = temp;
+//        }
+//        if (firstCoordinate.charAt(0) == secondCoordinate.charAt(0)) {
+//            (firstCoordinate.charAt(1) - secondCoordinate.charAt(1) != range) {
+//                throw new IOException();
+//            }
+//        }
+//    }
 
     /* Do not change code below */
     public static void main(String[] args) throws IOException {
@@ -64,5 +104,42 @@ public class Main {
 
     }
 
-    private static int transformLettersToNumbers(char letterCoordinate)
+    private static int transformLettersToNumbers(char letterCoordinate) throws IOException {
+        int value = 0;
+        switch (letterCoordinate) {
+            case 'A': {
+                return 1;
+            }
+            case 'B': {
+                return 2;
+            }
+            case 'C': {
+                return 3;
+            }
+            case 'D': {
+                return 4;
+            }
+            case 'E': {
+                return 5;
+            }
+            case 'F': {
+                return 6;
+            }
+            case 'G': {
+                return 7;
+            }
+            case 'H': {
+                return 8;
+            }
+            case 'I': {
+                return 9;
+            }
+            case 'J': {
+                return 10;
+            }
+            default: {
+                throw new IOException("Wrong letter value!");
+            }
+        }
+    }
 }
