@@ -74,21 +74,6 @@ public class Main {
         }
     }
 
-//    boolean checkIfCorrectPoints(String firstCoordinate, String secondCoordinate, int range, boolean horizontal) throws IOException {
-//
-//        int firstNumber = Character.getNumericValue(firstCoordinate.charAt(0));
-//        int secondNumber = Character.getNumericValue(secondCoordinate.charAt(0));
-//        if (firstCoordinate.compareTo(secondCoordinate) > 0) {
-//            String temp = firstCoordinate;
-//            firstCoordinate = secondCoordinate;
-//            secondCoordinate = temp;
-//        }
-//        if (firstCoordinate.charAt(0) == secondCoordinate.charAt(0)) {
-//            (firstCoordinate.charAt(1) - secondCoordinate.charAt(1) != range) {
-//                throw new IOException();
-//            }
-//        }
-//    }
 
     /* Do not change code below */
     public static void main(String[] args) throws IOException {
