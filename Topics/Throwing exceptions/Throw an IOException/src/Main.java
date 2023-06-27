@@ -8,7 +8,7 @@ public class Main {
     // change this method
     public static void method() throws IOException {
         Scanner scanner = new Scanner(System.in);
-        String startPoint = null, endPoint = null;
+        String startPoint, endPoint;
         char[][] board = new char[BOARD_SIZE][BOARD_SIZE];
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j < BOARD_SIZE; j++) {
@@ -32,7 +32,7 @@ public class Main {
         System.out.println("Enter the coordinates of the Aircraft Carrier (5 cells):");
         startPoint = scanner.next();
         endPoint = scanner.next();
-        int[][] pointsCoordinates = new int[2][2];
+        int[][] pointsCoordinates;
         pointsCoordinates = transformPoint(startPoint, endPoint);
         board = updateBoard(board, pointsCoordinates, 5);
         printBoard(board);
