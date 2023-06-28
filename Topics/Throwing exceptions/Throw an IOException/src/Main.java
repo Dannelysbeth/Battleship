@@ -20,15 +20,16 @@ public class Main {
             System.out.print(" " + j);
         }
         System.out.println();
-        for (int i = 0; i < BOARD_SIZE; i++) {
-
-            char character = (char) ('A' + i);
-            System.out.print(character + " ");
-            for (int j = 0; j < BOARD_SIZE; j++) {
-                System.out.print(board[i][j] + " ");
-            }
-            System.out.println();
-        }
+        printBoard(board);
+//        for (int i = 0; i < BOARD_SIZE; i++) {
+//
+//            char character = (char) ('A' + i);
+//            System.out.print(character + " ");
+//            for (int j = 0; j < BOARD_SIZE; j++) {
+//                System.out.print(board[i][j] + " ");
+//            }
+//            System.out.println();
+//        }
         System.out.println("Enter the coordinates of the Aircraft Carrier (5 cells):");
         startPoint = scanner.next();
         endPoint = scanner.next();
