@@ -21,15 +21,6 @@ public class Main {
         }
         System.out.println();
         printBoard(board);
-//        for (int i = 0; i < BOARD_SIZE; i++) {
-//
-//            char character = (char) ('A' + i);
-//            System.out.print(character + " ");
-//            for (int j = 0; j < BOARD_SIZE; j++) {
-//                System.out.print(board[i][j] + " ");
-//            }
-//            System.out.println();
-//        }
         System.out.println("Enter the coordinates of the Aircraft Carrier (5 cells):");
         startPoint = scanner.next();
         endPoint = scanner.next();
@@ -43,20 +34,21 @@ public class Main {
     public static int[][] transformPoint(String firstCoordinate, String secondCoordinate) throws IOException {
         int[][] coordinatesTable = new int[2][2];
         coordinatesTable[0][0] = transformLettersToNumbers(firstCoordinate.charAt(0));
-        coordinatesTable[0][1] = Character.valueOf(firstCoordinate.charAt(1));
+        coordinatesTable[0][1] = Character.valueOf(firstCoordinate.charAt(1)) - 49;
         coordinatesTable[1][0] = transformLettersToNumbers(secondCoordinate.charAt(0));
-        coordinatesTable[1][1] = Character.valueOf(secondCoordinate.charAt(1));
+        coordinatesTable[1][1] = Character.valueOf(secondCoordinate.charAt(1)) - 49;
         return coordinatesTable;
     }
 
     public static char[][] updateBoard(char[][] board, int[][] intTable, int range) throws IOException {
         if (intTable[0][0] == intTable[1][0]) {
             for (int i = intTable[0][1]; i < intTable[1][1]; i++) {
-                board[intTable[0][0] - 1][i - 1] = 'O';
+//                board[intTable[0][0] - 1][i - 1] = 'O';
+                board[intTable[0][0]][i] = 'O';
             }
         } else if (intTable[0][1] == intTable[1][1]) {
             for (int i = intTable[0][0]; i < intTable[1][0]; i++) {
-                board[i - 1][intTable[0][1] - 1] = 'O';
+                board[i][intTable[0][1] ] = 'O';
             }
         } else {
             throw new IOException("Smth wrong");
@@ -86,42 +78,38 @@ public class Main {
         }
     }
 
-    public void setBoardGame() {
-
-    }
-
     private static int transformLettersToNumbers(char letterCoordinate) throws IOException {
         int value = 0;
         switch (letterCoordinate) {
             case 'A': {
-                return 1;
+                return 0;
             }
             case 'B': {
-                return 2;
+                return 1;
             }
             case 'C': {
-                return 3;
+                return 2;
             }
             case 'D': {
-                return 4;
+                return 3;
             }
             case 'E': {
-                return 5;
+                return 4;
             }
             case 'F': {
-                return 6;
+                return 5;
             }
             case 'G': {
-                return 7;
+                return 6;
             }
             case 'H': {
-                return 8;
+                return 7;
             }
             case 'I': {
-                return 9;
+                return 8;
             }
             case 'J': {
-                return 10;
+                return 9;
             }
             default: {
                 throw new IOException("Wrong letter value!");
