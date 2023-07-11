@@ -63,6 +63,7 @@ public class Main {
             }
         }
 
+        //TODO
         printBoard(board);
         System.out.println("\nEnter the coordinates of the Submarine (3 cells)");
         while (true) {
