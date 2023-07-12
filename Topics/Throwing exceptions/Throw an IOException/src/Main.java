@@ -197,7 +197,7 @@ public class Main {
     }
 
     private static boolean checkIfShipsCross(int[][] coordinatesChart, char[][] board) {
-        if (coordinatesChart[0][0] == coordinatesChart[1][0]) {
+        if (coordinatesChart[0][1] == coordinatesChart[1][1]) {
             for (int i = coordinatesChart[0][1]; i < coordinatesChart[1][1]; i++) {
                 if (i != 0 && board[coordinatesChart[0][0]][i - 1] == 'O') {
                     return false;
