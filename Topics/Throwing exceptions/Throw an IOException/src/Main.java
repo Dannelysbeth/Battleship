@@ -197,8 +197,8 @@ public class Main {
     }
 
     private static boolean checkIfShipsCross(int[][] coordinatesChart, char[][] board) {
-        if (coordinatesChart[0][0] == coordinatesChart[1][0]) {
-            for (int i = coordinatesChart[0][1]; i < coordinatesChart[1][1]; i++) {
+        if (coordinatesChart[0][1] != coordinatesChart[1][1]) {
+            for (int i = coordinatesChart[0][1]; i <= coordinatesChart[1][1]; i++) {
                 if (i != 0 && board[coordinatesChart[0][0]][i - 1] == 'O') {
                     return false;
 
@@ -214,18 +214,18 @@ public class Main {
                 }
             }
         } else {
-            for (int i = coordinatesChart[0][0]; i < coordinatesChart[1][0]; i++) {
-                if (i != 0 && board[i - 1][coordinatesChart[0][0]] == 'O') {
+            for (int i = coordinatesChart[0][0]; i <= coordinatesChart[1][0]; i++) {
+                if (i != 0 && board[i - 1][coordinatesChart[0][1]] == 'O') {
                     return false;
 
                 }
-                if (i != 9 && board[i + 1][coordinatesChart[0][0]] == 'O') {
+                if (i != 9 && board[i + 1][coordinatesChart[0][1]] == 'O') {
                     return false;
                 }
-                if (coordinatesChart[0][0] != 0 && board[i][coordinatesChart[0][0] - 1] == 'O') {
+                if (coordinatesChart[0][1] != 0 && board[i][coordinatesChart[0][1] - 1] == 'O') {
                     return false;
                 }
-                if (coordinatesChart[0][0] != 9 && board[i][coordinatesChart[0][0] + 1] == 'O') {
+                if (coordinatesChart[0][1] != 9 && board[i][coordinatesChart[0][1] + 1] == 'O') {
                     return false;
                 }
             }
