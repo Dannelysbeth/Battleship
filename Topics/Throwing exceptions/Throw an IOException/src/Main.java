@@ -122,6 +122,10 @@ public class Main {
         }
         printBoard(board);
 
+        System.out.println("The game starts");
+        String shot = scanner.next();
+        pointsCoordinates = transformPoint(startPoint, endPoint);
+
     }
 
     public static int[][] transformPoint(String firstCoordinate, String secondCoordinate) throws IOException {
