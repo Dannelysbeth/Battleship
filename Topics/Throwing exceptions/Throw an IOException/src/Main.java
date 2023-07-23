@@ -31,7 +31,7 @@ public class Main {
             startPoint = scanner.next();
             endPoint = scanner.next();
             int[][] pointsCoordinates;
-            pointsCoordinates = transformPoint(startPoint, endPoint);
+            pointsCoordinates = transformPoints(startPoint, endPoint);
             correct = checkLength(pointsCoordinates, 5);
             farEnough = checkIfShipsCross(pointsCoordinates, board);
             if (correct && farEnough) {
@@ -50,7 +50,7 @@ public class Main {
             startPoint = scanner.next();
             endPoint = scanner.next();
             int[][] pointsCoordinates;
-            pointsCoordinates = transformPoint(startPoint, endPoint);
+            pointsCoordinates = transformPoints(startPoint, endPoint);
             correct = checkLength(pointsCoordinates, 4);
             farEnough = checkIfShipsCross(pointsCoordinates, board);
             if (correct && farEnough) {
@@ -63,14 +63,13 @@ public class Main {
             }
         }
 
-        //TODO
         printBoard(board);
         System.out.println("\nEnter the coordinates of the Submarine (3 cells)");
         while (true) {
             startPoint = scanner.next();
             endPoint = scanner.next();
             int[][] pointsCoordinates;
-            pointsCoordinates = transformPoint(startPoint, endPoint);
+            pointsCoordinates = transformPoints(startPoint, endPoint);
             correct = checkLength(pointsCoordinates, 3);
             farEnough = checkIfShipsCross(pointsCoordinates, board);
             if (correct && farEnough) {
@@ -89,7 +88,7 @@ public class Main {
             startPoint = scanner.next();
             endPoint = scanner.next();
             int[][] pointsCoordinates;
-            pointsCoordinates = transformPoint(startPoint, endPoint);
+            pointsCoordinates = transformPoints(startPoint, endPoint);
             correct = checkLength(pointsCoordinates, 3);
             farEnough = checkIfShipsCross(pointsCoordinates, board);
             if (correct && farEnough) {
@@ -108,7 +107,7 @@ public class Main {
             startPoint = scanner.next();
             endPoint = scanner.next();
             int[][] pointsCoordinates;
-            pointsCoordinates = transformPoint(startPoint, endPoint);
+            pointsCoordinates = transformPoints(startPoint, endPoint);
             correct = checkLength(pointsCoordinates, 2);
             farEnough = checkIfShipsCross(pointsCoordinates, board);
             if (correct && farEnough) {
@@ -122,13 +121,21 @@ public class Main {
         }
         printBoard(board);
 
-        System.out.println("The game starts");
+        System.out.println("The game starts!\n");
+        printBoard(board);
+        System.out.println("Take a shot!\n");
         String shot = scanner.next();
-        pointsCoordinates = transformPoint(startPoint, endPoint);
+        while(true){
+            int [] [] pointCoordinate = transformPoint(shot);
+        }
+
+
+
+
 
     }
 
-    public static int[][] transformPoint(String firstCoordinate, String secondCoordinate) throws IOException {
+    public static int[][] transformPoints(String firstCoordinate, String secondCoordinate) throws IOException {
         int[][] coordinatesTable = new int[2][2];
         int firstNumber = Integer.parseInt(firstCoordinate.substring(1)) - 1;
         int secondNumber = Integer.parseInt(secondCoordinate.substring(1)) - 1;
@@ -138,6 +145,19 @@ public class Main {
         coordinatesTable[1][1] = max(firstNumber, secondNumber);
         return coordinatesTable;
     }
+
+    public static int[][] transformPoint(String coordinate) throws IOException {
+        int[][] coordinatesTable = new int[1][1];
+        int number = Integer.parseInt(coordinate.substring(1)) - 1;
+
+        coordinatesTable[0][0] = transformLettersToNumbers(coordinate.charAt(0));
+        coordinatesTable[0][1] = number;
+
+        return coordinatesTable;
+
+    }
+
+    public checkNumber
 
     public static char[][] updateBoard(char[][] board, int[][] intTable, int range) throws IOException {
         if (intTable[0][0] == intTable[1][0]) {
@@ -198,6 +218,12 @@ public class Main {
             return false;
         }
         return true;
+    }
+
+    private boolean checkNumber(int numberCoordinate){
+        if(numberCoordinate < 1 || numberCoordinate > 10){
+            throw new IOException("")
+        }
     }
 
     private static boolean checkIfShipsCross(int[][] coordinatesChart, char[][] board) {
@@ -270,7 +296,7 @@ public class Main {
                 return 9;
             }
             default: {
-                throw new IOException("Wrong letter value!");
+                throw new IOException("Wrong coordinate!");
             }
         }
     }
