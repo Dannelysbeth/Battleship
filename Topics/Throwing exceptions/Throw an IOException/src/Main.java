@@ -220,9 +220,9 @@ public class Main {
         return true;
     }
 
-    private boolean checkNumber(int numberCoordinate){
+    private boolean checkNumber(int numberCoordinate) throws IOException {
         if(numberCoordinate < 1 || numberCoordinate > 10){
-            throw new IOException("")
+            throw new IOException("Thats not a number");
         }
     }
 
