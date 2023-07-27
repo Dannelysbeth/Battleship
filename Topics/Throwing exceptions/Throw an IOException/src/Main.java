@@ -14,19 +14,17 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         String startPoint, endPoint;
         char[][] board = new char[BOARD_SIZE][BOARD_SIZE];
-        char[][] plainBoard = new char[BOARD_SIZE][BOARD_SIZE];
+        char[][] hittingBoard = new char[BOARD_SIZE][BOARD_SIZE];
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j < BOARD_SIZE; j++) {
                 board[i][j] = '~';
-                plainBoard[i][j] = '~';
+                hittingBoard[i][j] = '~';
 
             }
         }
 
         System.out.print(" ");
-//        for (int j = 1; j <= BOARD_SIZE; j++) {
-//            System.out.print(" " + j);
-//        }
+
         System.out.println();
         printBoard(board);
         String shipName = "";
@@ -128,37 +126,56 @@ public class Main {
         printBoard(board);
 
         System.out.println("The game starts!\n");
-        printBoard(plainBoard);
-        System.out.println("Take a shot!\n");
-        String shot = scanner.next();
-        int[][] pointCoordinate;
-        while (true) {
-            pointCoordinate = transformPoint(shot);
-            if (checkCoordinates(pointCoordinate)) {
-                break;
+        printBoard(hittingBoard);
+        boolean gameOn = true;
+        while(gameOn) {
+            System.out.println("Take a shot!\n");
+            String shot = scanner.next();
+            int[][] pointCoordinate;
+
+            while (true) {
+                pointCoordinate = transformPoint(shot);
+                if (checkCoordinates(pointCoordinate)) {
+                    break;
+                }
+                System.out.println("Error! You entered the wrong coordinates! Try again:\n");
+                shot = scanner.next();
             }
-            System.out.println("Error! You entered the wrong coordinates! Try again:\n");
-            shot = scanner.next();
-        }
-        board = updateBoard(board, pointCoordinate);
+            board = updateBoard(board, pointCoordinate);
 
 
-        int fCoordinate = pointCoordinate[0][0];
-        int sCoordinate = pointCoordinate[0][1];
-        if(board[fCoordinate][sCoordinate] == 'X'){
-            plainBoard[fCoordinate][sCoordinate] = 'X';
-            printBoard(plainBoard);
-            System.out.println("You hit a ship!");
-        } else {
-            plainBoard[fCoordinate][sCoordinate] = 'M';
-            printBoard(plainBoard);
-            System.out.println("You missed!");
+            int fCoordinate = pointCoordinate[0][0];
+            int sCoordinate = pointCoordinate[0][1];
+            if (board[fCoordinate][sCoordinate] == 'X') {
+                hittingBoard[fCoordinate][sCoordinate] = 'X';
+                printBoard(hittingBoard);
+                System.out.print("You hit a ship! ");
+                if (checkIfWon(board)){
+                    gameOn = false;
+                }
+            } else {
+                hittingBoard[fCoordinate][sCoordinate] = 'M';
+                printBoard(hittingBoard);
+                System.out.print("You missed! ");
+            }
         }
+        System.out.println("\nYou sank the last ship. You won. Congratulations!");
 
         printBoard(board);
 
 
 
+    }
+
+    private static boolean checkIfWon(char[][] board) {
+        for (int i = 0; i < BOARD_SIZE; i++){
+            for (int j=0; j< BOARD_SIZE; j++){
+                if(board[i][j] == 'O'){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public static int[][] transformPoints(String firstCoordinate, String secondCoordinate) throws IOException {
@@ -209,7 +226,7 @@ public class Main {
     public static char[][] updateBoard(char[][] board, int[][] coordinate) {
         int firstCoordinate = coordinate[0][0];
         int secondCoordinate = coordinate[0][1];
-        if (board[firstCoordinate][secondCoordinate] == 'O') {
+        if (board[firstCoordinate][secondCoordinate] == 'O' || board[firstCoordinate][secondCoordinate] == 'X') {
             board[firstCoordinate][secondCoordinate] = 'X';
         } else {
             board[firstCoordinate][secondCoordinate] = 'M';
@@ -334,7 +351,7 @@ public class Main {
                 return 9;
             }
             default: {
-                return 11;
+                return 10;
             }
         }
     }
