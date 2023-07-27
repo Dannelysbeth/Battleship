@@ -7,6 +7,8 @@ public class Main {
 
     static final int BOARD_SIZE = 10;
 
+    String message;
+
     // change this method
     public static void method() throws IOException {
         Scanner scanner = new Scanner(System.in);
@@ -18,9 +20,9 @@ public class Main {
             }
         }
         System.out.print(" ");
-        for (int j = 1; j <= BOARD_SIZE; j++) {
-            System.out.print(" " + j);
-        }
+//        for (int j = 1; j <= BOARD_SIZE; j++) {
+//            System.out.print(" " + j);
+//        }
         System.out.println();
         printBoard(board);
         String shipName = "";
@@ -35,7 +37,7 @@ public class Main {
             correct = checkLength(pointsCoordinates, 5);
             farEnough = checkIfShipsCross(pointsCoordinates, board);
             if (correct && farEnough) {
-                board = updateBoard(board, pointsCoordinates, 5);
+                board = setBoard(board, pointsCoordinates, 5);
                 break;
             } else if (!farEnough) {
                 System.out.println("Error! You placed it too close to another one. Try again:");
@@ -54,7 +56,7 @@ public class Main {
             correct = checkLength(pointsCoordinates, 4);
             farEnough = checkIfShipsCross(pointsCoordinates, board);
             if (correct && farEnough) {
-                board = updateBoard(board, pointsCoordinates, 4);
+                board = setBoard(board, pointsCoordinates, 4);
                 break;
             } else if (!farEnough) {
                 System.out.println("Error! You placed it too close to another one. Try again:");
@@ -73,7 +75,7 @@ public class Main {
             correct = checkLength(pointsCoordinates, 3);
             farEnough = checkIfShipsCross(pointsCoordinates, board);
             if (correct && farEnough) {
-                board = updateBoard(board, pointsCoordinates, 3);
+                board = setBoard(board, pointsCoordinates, 3);
                 break;
             } else if (!farEnough) {
                 System.out.println("Error! You placed it too close to another one. Try again:");
@@ -92,7 +94,7 @@ public class Main {
             correct = checkLength(pointsCoordinates, 3);
             farEnough = checkIfShipsCross(pointsCoordinates, board);
             if (correct && farEnough) {
-                board = updateBoard(board, pointsCoordinates, 3);
+                board = setBoard(board, pointsCoordinates, 3);
                 break;
             } else if (!farEnough) {
                 System.out.println("Error! You placed it too close to another one. Try again:");
@@ -111,7 +113,7 @@ public class Main {
             correct = checkLength(pointsCoordinates, 2);
             farEnough = checkIfShipsCross(pointsCoordinates, board);
             if (correct && farEnough) {
-                board = updateBoard(board, pointsCoordinates, 2);
+                board = setBoard(board, pointsCoordinates, 2);
                 break;
             } else if (!farEnough) {
                 System.out.println("Error! You placed it too close to another one. Try again:");
@@ -125,11 +127,21 @@ public class Main {
         printBoard(board);
         System.out.println("Take a shot!\n");
         String shot = scanner.next();
-        while(true){
-            int [] [] pointCoordinate = transformPoint(shot);
+        int[][] pointCoordinate;
+        while (true) {
+            pointCoordinate = transformPoint(shot);
+            if (checkCoordinates(pointCoordinate)) {
+                break;
+            }
+            System.out.println("Error! You entered the wrong coordinates! Try again:\n");
+            shot = scanner.next();
         }
-
-
+        board = updateBoard(board, pointCoordinate);
+        printBoard(board);
+        int fCoordinate = pointCoordinate[0][0];
+        int sCoordinate = pointCoordinate[0][1];
+        String msg = board[fCoordinate][sCoordinate] == 'X' ? "You hit a ship!" : "You missed!";
+        System.out.println(msg);
 
 
 
@@ -147,7 +159,7 @@ public class Main {
     }
 
     public static int[][] transformPoint(String coordinate) throws IOException {
-        int[][] coordinatesTable = new int[1][1];
+        int[][] coordinatesTable = new int[1][2];
         int number = Integer.parseInt(coordinate.substring(1)) - 1;
 
         coordinatesTable[0][0] = transformLettersToNumbers(coordinate.charAt(0));
@@ -157,9 +169,15 @@ public class Main {
 
     }
 
-    public checkNumber
+    static boolean checkCoordinates(int[][] coordinates) {
+        if (coordinates[0][0] >= 10 || coordinates[0][1] >= 10) {
+            return false;
+        }
+        return true;
+    }
 
-    public static char[][] updateBoard(char[][] board, int[][] intTable, int range) throws IOException {
+
+    public static char[][] setBoard(char[][] board, int[][] intTable, int range) throws IOException {
         if (intTable[0][0] == intTable[1][0]) {
             for (int i = intTable[0][1]; i <= intTable[1][1]; i++) {
                 board[intTable[0][0]][i] = 'O';
@@ -170,6 +188,17 @@ public class Main {
             }
         } else {
             throw new IOException("Smth wrong");
+        }
+        return board;
+    }
+
+    public static char[][] updateBoard(char[][] board, int[][] coordinate) {
+        int firstCoordinate = coordinate[0][0];
+        int secondCoordinate = coordinate[0][1];
+        if (board[firstCoordinate][secondCoordinate] == 'O') {
+            board[firstCoordinate][secondCoordinate] = 'X';
+        } else {
+            board[firstCoordinate][secondCoordinate] = 'M';
         }
         return board;
     }
@@ -220,11 +249,11 @@ public class Main {
         return true;
     }
 
-    private boolean checkNumber(int numberCoordinate) throws IOException {
-        if(numberCoordinate < 1 || numberCoordinate > 10){
-            throw new IOException("Thats not a number");
-        }
-    }
+//    private boolean checkNumber(int numberCoordinate) throws IOException {
+//        if (numberCoordinate < 1 || numberCoordinate > 10) {
+//            throw new IOException("Thats not a number");
+//        }
+//    }
 
     private static boolean checkIfShipsCross(int[][] coordinatesChart, char[][] board) {
         if (coordinatesChart[0][1] != coordinatesChart[1][1]) {
@@ -296,7 +325,7 @@ public class Main {
                 return 9;
             }
             default: {
-                throw new IOException("Wrong coordinate!");
+                return 11;
             }
         }
     }
