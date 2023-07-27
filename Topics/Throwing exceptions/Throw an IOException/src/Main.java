@@ -14,11 +14,15 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         String startPoint, endPoint;
         char[][] board = new char[BOARD_SIZE][BOARD_SIZE];
+        char[][] plainBoard = new char[BOARD_SIZE][BOARD_SIZE];
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j < BOARD_SIZE; j++) {
                 board[i][j] = '~';
+                plainBoard[i][j] = '~';
+
             }
         }
+
         System.out.print(" ");
 //        for (int j = 1; j <= BOARD_SIZE; j++) {
 //            System.out.print(" " + j);
@@ -124,7 +128,7 @@ public class Main {
         printBoard(board);
 
         System.out.println("The game starts!\n");
-        printBoard(board);
+        printBoard(plainBoard);
         System.out.println("Take a shot!\n");
         String shot = scanner.next();
         int[][] pointCoordinate;
@@ -137,11 +141,21 @@ public class Main {
             shot = scanner.next();
         }
         board = updateBoard(board, pointCoordinate);
-        printBoard(board);
+
+
         int fCoordinate = pointCoordinate[0][0];
         int sCoordinate = pointCoordinate[0][1];
-        String msg = board[fCoordinate][sCoordinate] == 'X' ? "You hit a ship!" : "You missed!";
-        System.out.println(msg);
+        if(board[fCoordinate][sCoordinate] == 'X'){
+            plainBoard[fCoordinate][sCoordinate] = 'X';
+            printBoard(plainBoard);
+            System.out.println("You hit a ship!");
+        } else {
+            plainBoard[fCoordinate][sCoordinate] = 'M';
+            printBoard(plainBoard);
+            System.out.println("You missed!");
+        }
+
+        printBoard(board);
 
 
 
@@ -249,11 +263,6 @@ public class Main {
         return true;
     }
 
-//    private boolean checkNumber(int numberCoordinate) throws IOException {
-//        if (numberCoordinate < 1 || numberCoordinate > 10) {
-//            throw new IOException("Thats not a number");
-//        }
-//    }
 
     private static boolean checkIfShipsCross(int[][] coordinatesChart, char[][] board) {
         if (coordinatesChart[0][1] != coordinatesChart[1][1]) {
