@@ -7,6 +7,16 @@ public class Main {
 
     static final int BOARD_SIZE = 10;
 
+    static final char EMPTY ='~';
+    static final char MISS ='M';
+    static final char HIT ='X';
+    static final char SHIP ='O';
+
+    int [][] myBoard = new int[BOARD_SIZE][BOARD_SIZE];
+
+    int [][] componentsBoard = new int[BOARD_SIZE][BOARD_SIZE];
+
+
     String message;
 
     // change this method
