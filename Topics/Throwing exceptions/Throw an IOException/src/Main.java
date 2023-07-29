@@ -4,183 +4,211 @@ import java.util.Scanner;
 import static java.lang.Math.*;
 
 public class Main {
+    enum Ship {
+        AC("Aircraft Carrier", 5), B("Battleship", 4), S("Submarine", 3), C("Cruiser", 3), D("Destroyer", 2);
+        private final String name;
+        private final int length;
+
+        Ship(String name, int length) {
+            this.name = name;
+            this.length = length;
+        }
+    }
 
     static final int BOARD_SIZE = 10;
 
-    static final char EMPTY ='~';
-    static final char MISS ='M';
-    static final char HIT ='X';
-    static final char SHIP ='O';
+    static final char EMPTY = '~';
+    static final char MISS = 'M';
+    static final char HIT = 'X';
+    static final char SHIP = 'O';
 
-    int [][] myBoard = new int[BOARD_SIZE][BOARD_SIZE];
+    int[][] myBoard;
+    int[][] componentsBoard;
 
-    int [][] componentsBoard = new int[BOARD_SIZE][BOARD_SIZE];
+    private static char[][] initBoard() {
+        char[][] board = new char[BOARD_SIZE][BOARD_SIZE];
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                board[i][j] = EMPTY;
+            }
+        }
+        return board;
+    }
+
+    private static char[][] placeShipOnBoard(char[][] board, Ship ship, Scanner scanner) {
+        boolean correct;
+        boolean farEnough;
+        while (true) {
+            String startPoint = scanner.next();
+            String endPoint = scanner.next();
+            int[][] pointsCoordinates;
+            pointsCoordinates = transformPoints(startPoint, endPoint);
+            correct = checkLength(pointsCoordinates, ship.length);
+            farEnough = checkIfShipsCross(pointsCoordinates, board);
+            if (correct && farEnough) {
+                board = setBoard(board, pointsCoordinates);
+                break;
+            } else if (!farEnough) {
+                System.out.println("Error! You placed it too close to another one. Try again:");
+            } else {
+                System.out.println("\nError! Wrong length of the " + ship.name + "! Try again: ");
+            }
+        }
+        return board;
+    }
+
+    private static char[][] setBoard(char[][] board, Scanner scanner) {
+        printBoard(board);
+
+        System.out.println("Enter the coordinates of the Aircraft Carrier (5 cells)");
+        board = placeShipOnBoard(board, Ship.AC, scanner);
+        printBoard(board);
 
 
-    String message;
+        System.out.println("\nEnter the coordinates of the Battleship (4 cells)");
+        board = placeShipOnBoard(board, Ship.B, scanner);
+        printBoard(board);
+
+
+        System.out.println("\nEnter the coordinates of the Submarine (3 cells)");
+        board = placeShipOnBoard(board, Ship.S, scanner);
+
+        printBoard(board);
+        System.out.println("\nEnter the coordinates of the Cruiser (3 cells)");
+        board = placeShipOnBoard(board, Ship.C, scanner);
+
+        printBoard(board);
+        System.out.println("\nEnter the coordinates of the Destroyer (2 cells)");
+        board = placeShipOnBoard(board, Ship.D, scanner);
+        printBoard(board);
+
+        return board;
+    }
+
+    private static char[][] maskBoard(char[][] boardToMask) {
+        char[][] maskedBoard = new char[BOARD_SIZE][BOARD_SIZE];
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                if (boardToMask[i][j] == SHIP) {
+                    maskedBoard[i][j] = EMPTY;
+                } else {
+                    maskedBoard[i][j] = boardToMask[i][j];
+                }
+            }
+        }
+        return maskedBoard;
+    }
+
+    private static void printPlayersView(char[][] hittingBoard, char[][] myBoard) {
+        System.out.println("\n");
+        printBoard(maskBoard(hittingBoard));
+        System.out.println("---------------------");
+        printBoard(myBoard);
+    }
+
+    private static boolean checkIfSankAShip(char [] [] board, int fCoordinate, int sCoordinate) {
+        if (fCoordinate < BOARD_SIZE - 1 && board[fCoordinate + 1] [sCoordinate] == SHIP){
+            return false;
+        } else if (fCoordinate > 1 && board[fCoordinate - 1] [sCoordinate] == SHIP) {
+            return false;
+        } else if (sCoordinate < BOARD_SIZE - 1 && board[fCoordinate] [sCoordinate + 1] == SHIP) {
+            return false;
+        } else if (sCoordinate > 1 && board[fCoordinate] [sCoordinate - 1] == SHIP) {
+            return false;
+        }
+        return true;
+    }
+
+    private static char[][] shoot(char[][] hittingBoard, Scanner scanner) {
+        String shot = scanner.next();
+        int[][] pointCoordinate;
+
+        while (true) {
+            pointCoordinate = transformPoint(shot);
+            if (checkCoordinates(pointCoordinate)) {
+                break;
+            }
+            System.out.println("Error! You entered the wrong coordinates! Try again:\n");
+            shot = scanner.next();
+        }
+
+        int fCoordinate = pointCoordinate[0][0];
+        int sCoordinate = pointCoordinate[0][1];
+        if (hittingBoard[fCoordinate][sCoordinate] == SHIP || hittingBoard[fCoordinate][sCoordinate] == HIT) {
+            hittingBoard[fCoordinate][sCoordinate] = HIT;
+            System.out.print("You hit a ship! ");
+            if(checkIfSankAShip(hittingBoard, fCoordinate, sCoordinate)){
+                System.out.println("You sank a ship!");
+            }
+        } else {
+            hittingBoard[fCoordinate][sCoordinate] = MISS;
+            System.out.print("You missed! ");
+        }
+
+        return hittingBoard;
+    }
+
+    public static void clearScreen() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
+
 
     // change this method
     public static void method() throws IOException {
         Scanner scanner = new Scanner(System.in);
-        String startPoint, endPoint;
-        char[][] board = new char[BOARD_SIZE][BOARD_SIZE];
-        char[][] hittingBoard = new char[BOARD_SIZE][BOARD_SIZE];
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            for (int j = 0; j < BOARD_SIZE; j++) {
-                board[i][j] = '~';
-                hittingBoard[i][j] = '~';
+        char[][] player1Board = initBoard();
+        char[][] player2Board = initBoard();
+        System.out.println("Player 1, place your ships on the game field");
+        setBoard(player1Board, scanner);
 
-            }
-        }
+        System.out.println("\nPress Enter and pass the move to another player\n");
+//        scanner.nextLine(); // Wait for the Enter key press.
+        System.in.read();
+        clearScreen();
 
-        System.out.print(" ");
+        System.out.println("Player 2, place your ships on the game field");
+        setBoard(player2Board, scanner);
 
-        System.out.println();
-        printBoard(board);
-        String shipName = "";
-        boolean correct = false;
-        boolean farEnough = false;
-        System.out.println("Enter the coordinates of the Aircraft Carrier (5 cells)");
-        while (true) {
-            startPoint = scanner.next();
-            endPoint = scanner.next();
-            int[][] pointsCoordinates;
-            pointsCoordinates = transformPoints(startPoint, endPoint);
-            correct = checkLength(pointsCoordinates, 5);
-            farEnough = checkIfShipsCross(pointsCoordinates, board);
-            if (correct && farEnough) {
-                board = setBoard(board, pointsCoordinates, 5);
-                break;
-            } else if (!farEnough) {
-                System.out.println("Error! You placed it too close to another one. Try again:");
-            } else {
-                System.out.println("\nError! Wrong length of the Aircraft Carrier! Try again: ");
-            }
 
-        }
-        printBoard(board);
-        System.out.println("\nEnter the coordinates of the Battleship (4 cells)");
-        while (true) {
-            startPoint = scanner.next();
-            endPoint = scanner.next();
-            int[][] pointsCoordinates;
-            pointsCoordinates = transformPoints(startPoint, endPoint);
-            correct = checkLength(pointsCoordinates, 4);
-            farEnough = checkIfShipsCross(pointsCoordinates, board);
-            if (correct && farEnough) {
-                board = setBoard(board, pointsCoordinates, 4);
-                break;
-            } else if (!farEnough) {
-                System.out.println("Error! You placed it too close to another one. Try again:");
-            } else {
-                System.out.println("\nError! Wrong length of the Battleship! Try again: ");
-            }
-        }
 
-        printBoard(board);
-        System.out.println("\nEnter the coordinates of the Submarine (3 cells)");
-        while (true) {
-            startPoint = scanner.next();
-            endPoint = scanner.next();
-            int[][] pointsCoordinates;
-            pointsCoordinates = transformPoints(startPoint, endPoint);
-            correct = checkLength(pointsCoordinates, 3);
-            farEnough = checkIfShipsCross(pointsCoordinates, board);
-            if (correct && farEnough) {
-                board = setBoard(board, pointsCoordinates, 3);
-                break;
-            } else if (!farEnough) {
-                System.out.println("Error! You placed it too close to another one. Try again:");
-            } else {
-                System.out.println("\nError! Wrong length of the Submarine! Try again: ");
-            }
-        }
-
-        printBoard(board);
-        System.out.println("\nEnter the coordinates of the Cruiser (3 cells)");
-        while (true) {
-            startPoint = scanner.next();
-            endPoint = scanner.next();
-            int[][] pointsCoordinates;
-            pointsCoordinates = transformPoints(startPoint, endPoint);
-            correct = checkLength(pointsCoordinates, 3);
-            farEnough = checkIfShipsCross(pointsCoordinates, board);
-            if (correct && farEnough) {
-                board = setBoard(board, pointsCoordinates, 3);
-                break;
-            } else if (!farEnough) {
-                System.out.println("Error! You placed it too close to another one. Try again:");
-            } else {
-                System.out.println("\nError! Wrong length of the Cruiser! Try again: ");
-            }
-        }
-
-        printBoard(board);
-        System.out.println("\nEnter the coordinates of the Destroyer (2 cells)");
-        while (true) {
-            startPoint = scanner.next();
-            endPoint = scanner.next();
-            int[][] pointsCoordinates;
-            pointsCoordinates = transformPoints(startPoint, endPoint);
-            correct = checkLength(pointsCoordinates, 2);
-            farEnough = checkIfShipsCross(pointsCoordinates, board);
-            if (correct && farEnough) {
-                board = setBoard(board, pointsCoordinates, 2);
-                break;
-            } else if (!farEnough) {
-                System.out.println("Error! You placed it too close to another one. Try again:");
-            } else {
-                System.out.println("\nError! Wrong length of the Destroyer! Try again: ");
-            }
-        }
-        printBoard(board);
-
-        System.out.println("The game starts!\n");
-        printBoard(hittingBoard);
         boolean gameOn = true;
-        while(gameOn) {
-            System.out.println("Take a shot!\n");
-            String shot = scanner.next();
-            int[][] pointCoordinate;
-
-            while (true) {
-                pointCoordinate = transformPoint(shot);
-                if (checkCoordinates(pointCoordinate)) {
-                    break;
-                }
-                System.out.println("Error! You entered the wrong coordinates! Try again:\n");
-                shot = scanner.next();
-            }
-            board = updateBoard(board, pointCoordinate);
-
-
-            int fCoordinate = pointCoordinate[0][0];
-            int sCoordinate = pointCoordinate[0][1];
-            if (board[fCoordinate][sCoordinate] == 'X') {
-                hittingBoard[fCoordinate][sCoordinate] = 'X';
-                printBoard(hittingBoard);
-                System.out.print("You hit a ship! ");
-                if (checkIfWon(board)){
+        boolean player1 = true;
+        System.out.println("Press Enter and pass the move to another player");
+        System.in.read();
+        clearScreen();
+        while (gameOn) {
+            if (player1) {
+                printPlayersView(player2Board, player1Board);
+                System.out.println("\nPlayer 1, it's your turn: \n");
+                player2Board = shoot(player2Board, scanner);
+                if (checkIfWon(player2Board)) {
+                    System.out.println("\nYou sank the last ship. You won. Congratulations!");
                     gameOn = false;
                 }
+                player1 = false;
             } else {
-                hittingBoard[fCoordinate][sCoordinate] = 'M';
-                printBoard(hittingBoard);
-                System.out.print("You missed! ");
+                printPlayersView(player1Board, player2Board);
+                System.out.println("\nPlayer 2, it's your turn: \n");
+                player1Board = shoot(player1Board, scanner);
+                if (checkIfWon(player1Board)) {
+                    System.out.println("\nYou sank the last ship. You won. Congratulations!");
+                    gameOn = false;
+                }
+                player1 = true;
             }
+            System.out.println("\nPress Enter and pass the move to another player\n");
+            System.in.read();
+            clearScreen();
         }
-        System.out.println("\nYou sank the last ship. You won. Congratulations!");
-
-        printBoard(board);
-
 
 
     }
 
     private static boolean checkIfWon(char[][] board) {
-        for (int i = 0; i < BOARD_SIZE; i++){
-            for (int j=0; j< BOARD_SIZE; j++){
-                if(board[i][j] == 'O'){
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                if (board[i][j] == 'O') {
                     return false;
                 }
             }
@@ -188,7 +216,7 @@ public class Main {
         return true;
     }
 
-    public static int[][] transformPoints(String firstCoordinate, String secondCoordinate) throws IOException {
+    public static int[][] transformPoints(String firstCoordinate, String secondCoordinate) {
         int[][] coordinatesTable = new int[2][2];
         int firstNumber = Integer.parseInt(firstCoordinate.substring(1)) - 1;
         int secondNumber = Integer.parseInt(secondCoordinate.substring(1)) - 1;
@@ -199,7 +227,7 @@ public class Main {
         return coordinatesTable;
     }
 
-    public static int[][] transformPoint(String coordinate) throws IOException {
+    public static int[][] transformPoint(String coordinate) {
         int[][] coordinatesTable = new int[1][2];
         int number = Integer.parseInt(coordinate.substring(1)) - 1;
 
@@ -211,14 +239,11 @@ public class Main {
     }
 
     static boolean checkCoordinates(int[][] coordinates) {
-        if (coordinates[0][0] >= 10 || coordinates[0][1] >= 10) {
-            return false;
-        }
-        return true;
+        return coordinates[0][0] < 10 && coordinates[0][1] < 10;
     }
 
 
-    public static char[][] setBoard(char[][] board, int[][] intTable, int range) throws IOException {
+    public static char[][] setBoard(char[][] board, int[][] intTable) {
         if (intTable[0][0] == intTable[1][0]) {
             for (int i = intTable[0][1]; i <= intTable[1][1]; i++) {
                 board[intTable[0][0]][i] = 'O';
@@ -228,7 +253,7 @@ public class Main {
                 board[i][intTable[0][1]] = 'O';
             }
         } else {
-            throw new IOException("Smth wrong");
+            //throw new IOException("Smth wrong");
         }
         return board;
     }
@@ -284,10 +309,7 @@ public class Main {
             return false;
         } else if (condition2 && condition4) {
             return false;
-        } else if (!(condition2 || condition4)) {
-            return false;
-        }
-        return true;
+        } else return condition2 || condition4;
     }
 
 
@@ -328,7 +350,7 @@ public class Main {
         return true;
     }
 
-    private static int transformLettersToNumbers(char letterCoordinate) throws IOException {
+    private static int transformLettersToNumbers(char letterCoordinate) {
         switch (letterCoordinate) {
             case 'A': {
                 return 0;
